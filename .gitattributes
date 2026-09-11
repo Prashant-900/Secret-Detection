@@ -1,0 +1,5 @@
+# Preserve imported source/data bytes; Bash launchers must stay portable.
+* -text
+*.sh text eol=lf
+*.png binary
+*.zip binary

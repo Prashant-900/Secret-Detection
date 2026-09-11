@@ -1,0 +1,24 @@
+# Local environments and caches
+.runtime/
+.venv/
+.venv*/
+__pycache__/
+*.pyc
+artifacts/
+.hf-cache/
+.pytest_cache/
+
+# Downloaded repositories, tools, generated datasets and detailed scan output.
+# Keep the source recipes, frozen manifests, model and aggregate results in Git.
+Dataset/pipeline_bundle/tier_a/repos/
+Dataset/pipeline_bundle/tier_a/out/
+Dataset/pipeline_bundle/tier_a/preexisting_hits.csv
+Scanner/datasets/
+Scanner/tools/bin/
+Scanner/tools/tmp/
+Scanner/results/raw/
+Scanner/iac_eval_kit_v2.zip
+
+# Machine-specific editor files
+.DS_Store
+Thumbs.db
