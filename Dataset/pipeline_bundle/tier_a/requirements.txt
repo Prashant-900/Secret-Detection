@@ -1,0 +1,8 @@
+pyyaml
+python-hcl2
+scikit-learn
+numpy
+# GPU steps
+torch
+transformers
+vllm
