@@ -1,0 +1,13 @@
+{
+  "seed": 405,
+  "samples_per_family": 512,
+  "families": ["terraform", "kubernetes", "helm", "ansible", "compose", "github_actions", "cloudformation", "dotenv", "toml", "json_config", "ini", "xml", "python", "javascript", "java", "go"],
+  "include_splits": ["train"],
+  "ood_families": ["jenkins", "pulumi"],
+  "require_parsed": true,
+  "near_duplicate_threshold": 0.85,
+  "max_reject_rate": 0.35,
+  "workers": 12,
+  "retries": 5,
+  "backend": {"endpoint": "http://127.0.0.1:8000/v1", "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct", "timeout": 180, "max_tokens": 3500, "temperature": 0.85, "top_p": 0.95}
+}

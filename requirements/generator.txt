@@ -1,0 +1,2 @@
+# Separate environment: vLLM resolves its own compatible PyTorch build.
+vllm==0.11.2
