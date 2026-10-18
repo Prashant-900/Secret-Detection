@@ -1,0 +1,6 @@
+-r data.txt
+# Install torch separately using scripts/setup_remote.sh (CUDA 12.8 wheel).
+transformers==4.57.1
+numpy==2.2.6
+safetensors==0.6.2
+scikit-learn==1.7.2

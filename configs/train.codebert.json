@@ -1,0 +1,20 @@
+{
+  "model_name": "microsoft/codebert-base",
+  "epochs": 5,
+  "batch_size": 24,
+  "eval_batch_size": 48,
+  "grad_accumulation": 2,
+  "max_length": 512,
+  "learning_rate": 0.00002,
+  "precision": "bf16",
+  "gradient_checkpointing": true,
+  "early_stopping_patience": 2,
+  "seed": 13,
+  "class_weight": "balanced",
+  "source_weights": {"creddata": 1.0, "reviewed_real": 1.0, "tier_b": 0.5, "generated": 0.35},
+  "real_validation_sources": ["creddata", "reviewed_real"],
+  "allow_synthetic_validation": false,
+  "block_target_precision": 0.98,
+  "block_min_predictions": 100,
+  "block_wilson_z": 1.96
+}
