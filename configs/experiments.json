@@ -1,0 +1,24 @@
+{
+  "base_config": {
+    "epochs": 5,
+    "batch_size": 24,
+    "eval_batch_size": 48,
+    "grad_accumulation": 2,
+    "learning_rate": 0.00002,
+    "max_length": 512,
+    "precision": "bf16",
+    "gradient_checkpointing": true,
+    "early_stopping_patience": 2,
+    "source_weights": {"creddata": 1.0, "reviewed_real": 1.0, "tier_b": 0.5, "generated": 0.35},
+    "real_validation_sources": ["creddata", "reviewed_real"],
+    "allow_synthetic_validation": false,
+    "block_target_precision": 0.98,
+    "block_min_predictions": 100,
+    "block_wilson_z": 1.96
+  },
+  "models": [{"name": "codebert", "model_name": "microsoft/codebert-base"}, {"name": "unixcoder", "model_name": "microsoft/unixcoder-base"}],
+  "datasets": ["real_only", "augmented"],
+  "seeds": [13, 37, 73],
+  "include_mask_ablation": false,
+  "try_ensemble": true
+}
