@@ -1,0 +1,3568 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-31",
+  "description": "Historical reported metrics bundled for portable report generation; no remote DL scores are fabricated.",
+  "metric_convention": "Precision, recall, F1 and AUC are fractions in [0,1]. Null means unavailable, not zero. Experiment groups have distinct protocols and must be plotted separately.",
+  "experiments": [
+    {
+      "id": "creddata_all_saved",
+      "title": "Saved original-scanner comparison on all CredData repositories",
+      "dataset": "CredData",
+      "split": "all repositories (not a held-out result)",
+      "scoring": "Legacy labeled-line precision and positive-label-row recall; strict variant adds unlabeled-line false positives",
+      "provenance": "Scanner/results/creddata_results.json",
+      "provenance_details": {
+        "path": "Scanner/results/creddata_results.json",
+        "sha256": "af0a4e056cfadd097f0b5218d772d5b1806214251b7b5489ae860bcba806bdfc"
+      },
+      "notes": [
+        "Saved result has repo_split=all. The shipped v2 model was trained on the dev subset of these repositories, so all-repository numbers are not a clean test of generalization.",
+        "The result labels the implementation only as ours and records no scanner code hash or model hash. Preserve that label; do not assume it is v1, a regex-only scanner, or the newly trained deep-learning model.",
+        "Uses BLOCK >= 0.70 and WARN + BLOCK >= 0.40, which differ from shipped v2 defaults of 0.45 and 0.24.",
+        "Tolerance is zero; X labels are negative; strict false positives are counted only inside labeled files. UUID-positive categories are present in this result.",
+        "Recorded times are historical execution times on unspecified hardware, not a controlled latency comparison with the remote deep-learning run.",
+        "Category lists contain the top 15 categories only. Threshold sweeps are descriptive; do not use this all-repository sweep to retune a final test threshold."
+      ],
+      "settings": {
+        "dataset": "creddata",
+        "repo_split": "all",
+        "tolerance": 0,
+        "x_policy": "negative",
+        "strict_scope": "labeled-files"
+      },
+      "count_semantics": "raw_metrics.TP counts unique (file,line) hits; T_detected counts detected positive label rows. These can differ. Normalized tp/fp/fn/tn are null to prevent an invalid confusion matrix. missed_positive_rows = T_rows - T_detected.",
+      "models": [
+        {
+          "name": "ours [BLOCK>=0.7]",
+          "operating_point": "BLOCK",
+          "precision": 0.8852,
+          "recall": 0.686,
+          "f1": 0.773,
+          "precision_strict": 0.8462,
+          "f1_strict": 0.7577,
+          "threshold": 0.7,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 106.11929106712341,
+          "hits": 12887,
+          "raw_metrics": {
+            "hits": 12887,
+            "TP": 10905,
+            "FP_labeled": 1414,
+            "FP_unlabeled": 568,
+            "T_rows": 15753,
+            "T_detected": 10807,
+            "recall": 0.686,
+            "precision_labeled": 0.8852,
+            "f1_labeled": 0.773,
+            "precision_strict": 0.8462,
+            "f1_strict": 0.7577
+          },
+          "missed_positive_rows": 4946,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "Key",
+                3822,
+                0.704
+              ],
+              [
+                "Password",
+                2573,
+                0.836
+              ],
+              [
+                "UUID",
+                2316,
+                0.003
+              ],
+              [
+                "Secret",
+                1263,
+                0.959
+              ],
+              [
+                "PEM Private Key",
+                1161,
+                1.0
+              ],
+              [
+                "Auth:Basic Authorization",
+                601,
+                0.995
+              ],
+              [
+                "Token",
+                583,
+                0.873
+              ],
+              [
+                "URL Credentials",
+                213,
+                0.92
+              ],
+              [
+                "Auth",
+                174,
+                0.592
+              ],
+              [
+                "Token:UUID",
+                169,
+                0.994
+              ],
+              [
+                "AWS Client ID",
+                162,
+                0.37
+              ],
+              [
+                "Nonce",
+                148,
+                0.885
+              ],
+              [
+                "Key:Secret",
+                124,
+                0.952
+              ],
+              [
+                "API:Token",
+                112,
+                0.054
+              ],
+              [
+                "NTLM Token:Bearer Authorization:Auth",
+                105,
+                0.99
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "Key",
+                19929,
+                0.063
+              ],
+              [
+                "Password",
+                10941,
+                0.006
+              ],
+              [
+                "Token",
+                4594,
+                0.0
+              ],
+              [
+                "UUID",
+                3652,
+                0.0
+              ],
+              [
+                "API",
+                3598,
+                0.001
+              ],
+              [
+                "Auth",
+                3263,
+                0.002
+              ],
+              [
+                "Secret",
+                2175,
+                0.001
+              ],
+              [
+                "Credential",
+                547,
+                0.004
+              ],
+              [
+                "Basic Authorization",
+                538,
+                0.0
+              ],
+              [
+                "URL Credentials",
+                288,
+                0.007
+              ],
+              [
+                "Auth:Token",
+                268,
+                0.0
+              ],
+              [
+                "Key:Token",
+                263,
+                0.004
+              ],
+              [
+                "API:Key",
+                201,
+                0.0
+              ],
+              [
+                "Key:Secret",
+                145,
+                0.007
+              ],
+              [
+                "Password:URL Credentials",
+                117,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "rule:generic-api-key",
+              1031
+            ],
+            [
+              "entropy",
+              698
+            ],
+            [
+              "rule:pem-private-key-header",
+              82
+            ],
+            [
+              "assign",
+              67
+            ],
+            [
+              "rule:vault-service-token",
+              29
+            ],
+            [
+              "rule:generic-password-assignment",
+              25
+            ],
+            [
+              "rule:curl-auth-user",
+              16
+            ],
+            [
+              "call",
+              11
+            ],
+            [
+              "rule:gcp-service-account-json",
+              7
+            ],
+            [
+              "rule:auth-basic",
+              4
+            ]
+          ]
+        },
+        {
+          "name": "ours [WARN+BLOCK>=0.4]",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.8292,
+          "recall": 0.7623,
+          "f1": 0.7943,
+          "precision_strict": 0.7631,
+          "f1_strict": 0.7627,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 106.11929106712341,
+          "hits": 16005,
+          "raw_metrics": {
+            "hits": 16005,
+            "TP": 12213,
+            "FP_labeled": 2516,
+            "FP_unlabeled": 1276,
+            "T_rows": 15753,
+            "T_detected": 12008,
+            "recall": 0.7623,
+            "precision_labeled": 0.8292,
+            "f1_labeled": 0.7943,
+            "precision_strict": 0.7631,
+            "f1_strict": 0.7627
+          },
+          "missed_positive_rows": 3745,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "Key",
+                3822,
+                0.92
+              ],
+              [
+                "Password",
+                2573,
+                0.895
+              ],
+              [
+                "UUID",
+                2316,
+                0.006
+              ],
+              [
+                "Secret",
+                1263,
+                0.978
+              ],
+              [
+                "PEM Private Key",
+                1161,
+                1.0
+              ],
+              [
+                "Auth:Basic Authorization",
+                601,
+                0.995
+              ],
+              [
+                "Token",
+                583,
+                0.914
+              ],
+              [
+                "URL Credentials",
+                213,
+                0.972
+              ],
+              [
+                "Auth",
+                174,
+                0.684
+              ],
+              [
+                "Token:UUID",
+                169,
+                0.994
+              ],
+              [
+                "AWS Client ID",
+                162,
+                0.37
+              ],
+              [
+                "Nonce",
+                148,
+                0.973
+              ],
+              [
+                "Key:Secret",
+                124,
+                0.96
+              ],
+              [
+                "API:Token",
+                112,
+                0.098
+              ],
+              [
+                "NTLM Token:Bearer Authorization:Auth",
+                105,
+                0.99
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "Key",
+                19929,
+                0.109
+              ],
+              [
+                "Password",
+                10941,
+                0.018
+              ],
+              [
+                "Token",
+                4594,
+                0.002
+              ],
+              [
+                "UUID",
+                3652,
+                0.0
+              ],
+              [
+                "API",
+                3598,
+                0.006
+              ],
+              [
+                "Auth",
+                3263,
+                0.003
+              ],
+              [
+                "Secret",
+                2175,
+                0.004
+              ],
+              [
+                "Credential",
+                547,
+                0.005
+              ],
+              [
+                "Basic Authorization",
+                538,
+                0.0
+              ],
+              [
+                "URL Credentials",
+                288,
+                0.042
+              ],
+              [
+                "Auth:Token",
+                268,
+                0.004
+              ],
+              [
+                "Key:Token",
+                263,
+                0.011
+              ],
+              [
+                "API:Key",
+                201,
+                0.01
+              ],
+              [
+                "Key:Secret",
+                145,
+                0.014
+              ],
+              [
+                "Password:URL Credentials",
+                117,
+                0.017
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "entropy",
+              1894
+            ],
+            [
+              "rule:generic-api-key",
+              1413
+            ],
+            [
+              "assign",
+              233
+            ],
+            [
+              "rule:pem-private-key-header",
+              82
+            ],
+            [
+              "rule:generic-password-assignment",
+              51
+            ],
+            [
+              "rule:vault-service-token",
+              29
+            ],
+            [
+              "call",
+              22
+            ],
+            [
+              "rule:curl-auth-user",
+              16
+            ],
+            [
+              "rule:connection-string-password",
+              12
+            ],
+            [
+              "rule:helm-secret-value",
+              8
+            ]
+          ]
+        },
+        {
+          "name": "gitleaks",
+          "operating_point": "Tool default",
+          "precision": 0.8613,
+          "recall": 0.4577,
+          "f1": 0.5978,
+          "precision_strict": 0.8363,
+          "f1_strict": 0.5916,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 68.30629110336304,
+          "hits": 8356,
+          "raw_metrics": {
+            "hits": 8356,
+            "TP": 6988,
+            "FP_labeled": 1125,
+            "FP_unlabeled": 243,
+            "T_rows": 15753,
+            "T_detected": 7210,
+            "recall": 0.4577,
+            "precision_labeled": 0.8613,
+            "f1_labeled": 0.5978,
+            "precision_strict": 0.8363,
+            "f1_strict": 0.5916
+          },
+          "missed_positive_rows": 8543,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "Key",
+                3822,
+                0.881
+              ],
+              [
+                "Password",
+                2573,
+                0.058
+              ],
+              [
+                "UUID",
+                2316,
+                0.004
+              ],
+              [
+                "Secret",
+                1263,
+                0.835
+              ],
+              [
+                "PEM Private Key",
+                1161,
+                1.0
+              ],
+              [
+                "Auth:Basic Authorization",
+                601,
+                0.0
+              ],
+              [
+                "Token",
+                583,
+                0.518
+              ],
+              [
+                "URL Credentials",
+                213,
+                0.0
+              ],
+              [
+                "Auth",
+                174,
+                0.207
+              ],
+              [
+                "Token:UUID",
+                169,
+                0.923
+              ],
+              [
+                "AWS Client ID",
+                162,
+                0.698
+              ],
+              [
+                "Nonce",
+                148,
+                0.0
+              ],
+              [
+                "Key:Secret",
+                124,
+                0.629
+              ],
+              [
+                "API:Token",
+                112,
+                0.045
+              ],
+              [
+                "NTLM Token:Bearer Authorization:Auth",
+                105,
+                0.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "Key",
+                19929,
+                0.049
+              ],
+              [
+                "Password",
+                10941,
+                0.002
+              ],
+              [
+                "Token",
+                4594,
+                0.005
+              ],
+              [
+                "UUID",
+                3652,
+                0.0
+              ],
+              [
+                "API",
+                3598,
+                0.004
+              ],
+              [
+                "Auth",
+                3263,
+                0.005
+              ],
+              [
+                "Secret",
+                2175,
+                0.005
+              ],
+              [
+                "Credential",
+                547,
+                0.007
+              ],
+              [
+                "Basic Authorization",
+                538,
+                0.0
+              ],
+              [
+                "URL Credentials",
+                288,
+                0.0
+              ],
+              [
+                "Auth:Token",
+                268,
+                0.0
+              ],
+              [
+                "Key:Token",
+                263,
+                0.0
+              ],
+              [
+                "API:Key",
+                201,
+                0.01
+              ],
+              [
+                "Key:Secret",
+                145,
+                0.014
+              ],
+              [
+                "Password:URL Credentials",
+                117,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "rule:generic-api-key",
+              1266
+            ],
+            [
+              "rule:private-key",
+              59
+            ],
+            [
+              "rule:kubernetes-secret-yaml",
+              9
+            ],
+            [
+              "rule:curl-auth-user",
+              8
+            ],
+            [
+              "rule:vault-service-token",
+              8
+            ],
+            [
+              "rule:curl-auth-header",
+              7
+            ],
+            [
+              "rule:jwt",
+              6
+            ],
+            [
+              "rule:twitch-api-token",
+              2
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              2
+            ],
+            [
+              "rule:linkedin-client-id",
+              1
+            ]
+          ]
+        },
+        {
+          "name": "trufflehog",
+          "operating_point": "Tool default",
+          "precision": 0.5191,
+          "recall": 0.0132,
+          "f1": 0.0258,
+          "precision_strict": 0.207,
+          "f1_strict": 0.0248,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 35.64507699012756,
+          "hits": 855,
+          "raw_metrics": {
+            "hits": 855,
+            "TP": 177,
+            "FP_labeled": 164,
+            "FP_unlabeled": 514,
+            "T_rows": 15753,
+            "T_detected": 208,
+            "recall": 0.0132,
+            "precision_labeled": 0.5191,
+            "f1_labeled": 0.0258,
+            "precision_strict": 0.207,
+            "f1_strict": 0.0248
+          },
+          "missed_positive_rows": 15545,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "Key",
+                3822,
+                0.001
+              ],
+              [
+                "Password",
+                2573,
+                0.003
+              ],
+              [
+                "UUID",
+                2316,
+                0.0
+              ],
+              [
+                "Secret",
+                1263,
+                0.013
+              ],
+              [
+                "PEM Private Key",
+                1161,
+                0.012
+              ],
+              [
+                "Auth:Basic Authorization",
+                601,
+                0.0
+              ],
+              [
+                "Token",
+                583,
+                0.031
+              ],
+              [
+                "URL Credentials",
+                213,
+                0.202
+              ],
+              [
+                "Auth",
+                174,
+                0.006
+              ],
+              [
+                "Token:UUID",
+                169,
+                0.006
+              ],
+              [
+                "AWS Client ID",
+                162,
+                0.049
+              ],
+              [
+                "Nonce",
+                148,
+                0.0
+              ],
+              [
+                "Key:Secret",
+                124,
+                0.0
+              ],
+              [
+                "API:Token",
+                112,
+                0.0
+              ],
+              [
+                "NTLM Token:Bearer Authorization:Auth",
+                105,
+                0.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "Key",
+                19929,
+                0.001
+              ],
+              [
+                "Password",
+                10941,
+                0.002
+              ],
+              [
+                "Token",
+                4594,
+                0.0
+              ],
+              [
+                "UUID",
+                3652,
+                0.0
+              ],
+              [
+                "API",
+                3598,
+                0.0
+              ],
+              [
+                "Auth",
+                3263,
+                0.001
+              ],
+              [
+                "Secret",
+                2175,
+                0.0
+              ],
+              [
+                "Credential",
+                547,
+                0.0
+              ],
+              [
+                "Basic Authorization",
+                538,
+                0.002
+              ],
+              [
+                "URL Credentials",
+                288,
+                0.292
+              ],
+              [
+                "Auth:Token",
+                268,
+                0.0
+              ],
+              [
+                "Key:Token",
+                263,
+                0.0
+              ],
+              [
+                "API:Key",
+                201,
+                0.0
+              ],
+              [
+                "Key:Secret",
+                145,
+                0.0
+              ],
+              [
+                "Password:URL Credentials",
+                117,
+                0.256
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "detector",
+              678
+            ]
+          ]
+        },
+        {
+          "name": "detect-secrets",
+          "operating_point": "Tool default",
+          "precision": 0.528,
+          "recall": 0.2579,
+          "f1": 0.3466,
+          "precision_strict": 0.2858,
+          "f1_strict": 0.2711,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 285.0207607746124,
+          "hits": 15409,
+          "raw_metrics": {
+            "hits": 15409,
+            "TP": 4404,
+            "FP_labeled": 3937,
+            "FP_unlabeled": 7068,
+            "T_rows": 15753,
+            "T_detected": 4063,
+            "recall": 0.2579,
+            "precision_labeled": 0.528,
+            "f1_labeled": 0.3466,
+            "precision_strict": 0.2858,
+            "f1_strict": 0.2711
+          },
+          "missed_positive_rows": 11690,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "Key",
+                3822,
+                0.033
+              ],
+              [
+                "Password",
+                2573,
+                0.66
+              ],
+              [
+                "UUID",
+                2316,
+                0.016
+              ],
+              [
+                "Secret",
+                1263,
+                0.225
+              ],
+              [
+                "PEM Private Key",
+                1161,
+                0.274
+              ],
+              [
+                "Auth:Basic Authorization",
+                601,
+                0.017
+              ],
+              [
+                "Token",
+                583,
+                0.334
+              ],
+              [
+                "URL Credentials",
+                213,
+                0.559
+              ],
+              [
+                "Auth",
+                174,
+                0.144
+              ],
+              [
+                "Token:UUID",
+                169,
+                0.0
+              ],
+              [
+                "AWS Client ID",
+                162,
+                0.698
+              ],
+              [
+                "Nonce",
+                148,
+                0.493
+              ],
+              [
+                "Key:Secret",
+                124,
+                0.645
+              ],
+              [
+                "API:Token",
+                112,
+                0.054
+              ],
+              [
+                "NTLM Token:Bearer Authorization:Auth",
+                105,
+                0.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "Key",
+                19929,
+                0.014
+              ],
+              [
+                "Password",
+                10941,
+                0.224
+              ],
+              [
+                "Token",
+                4594,
+                0.003
+              ],
+              [
+                "UUID",
+                3652,
+                0.0
+              ],
+              [
+                "API",
+                3598,
+                0.02
+              ],
+              [
+                "Auth",
+                3263,
+                0.014
+              ],
+              [
+                "Secret",
+                2175,
+                0.232
+              ],
+              [
+                "Credential",
+                547,
+                0.004
+              ],
+              [
+                "Basic Authorization",
+                538,
+                0.006
+              ],
+              [
+                "URL Credentials",
+                288,
+                0.444
+              ],
+              [
+                "Auth:Token",
+                268,
+                0.0
+              ],
+              [
+                "Key:Token",
+                263,
+                0.034
+              ],
+              [
+                "API:Key",
+                201,
+                0.488
+              ],
+              [
+                "Key:Secret",
+                145,
+                0.51
+              ],
+              [
+                "Password:URL Credentials",
+                117,
+                0.444
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "plugin",
+              11005
+            ]
+          ]
+        }
+      ],
+      "threshold_sweeps": {
+        "ours": [
+          {
+            "threshold": 0.05,
+            "hits": 34474,
+            "TP": 12878,
+            "FP_labeled": 5573,
+            "FP_unlabeled": 16023,
+            "T_rows": 15753,
+            "T_detected": 12655,
+            "recall": 0.8033,
+            "precision_labeled": 0.698,
+            "f1_labeled": 0.7469,
+            "precision_strict": 0.3736,
+            "f1_strict": 0.51
+          },
+          {
+            "threshold": 0.1,
+            "hits": 27551,
+            "TP": 12773,
+            "FP_labeled": 4498,
+            "FP_unlabeled": 10280,
+            "T_rows": 15753,
+            "T_detected": 12563,
+            "recall": 0.7975,
+            "precision_labeled": 0.7396,
+            "f1_labeled": 0.7674,
+            "precision_strict": 0.4636,
+            "f1_strict": 0.5864
+          },
+          {
+            "threshold": 0.15,
+            "hits": 23078,
+            "TP": 12652,
+            "FP_labeled": 4005,
+            "FP_unlabeled": 6421,
+            "T_rows": 15753,
+            "T_detected": 12456,
+            "recall": 0.7907,
+            "precision_labeled": 0.7596,
+            "f1_labeled": 0.7748,
+            "precision_strict": 0.5482,
+            "f1_strict": 0.6475
+          },
+          {
+            "threshold": 0.2,
+            "hits": 20431,
+            "TP": 12564,
+            "FP_labeled": 3752,
+            "FP_unlabeled": 4115,
+            "T_rows": 15753,
+            "T_detected": 12384,
+            "recall": 0.7861,
+            "precision_labeled": 0.77,
+            "f1_labeled": 0.778,
+            "precision_strict": 0.6149,
+            "f1_strict": 0.6901
+          },
+          {
+            "threshold": 0.25,
+            "hits": 18634,
+            "TP": 12459,
+            "FP_labeled": 3373,
+            "FP_unlabeled": 2802,
+            "T_rows": 15753,
+            "T_detected": 12253,
+            "recall": 0.7778,
+            "precision_labeled": 0.787,
+            "f1_labeled": 0.7824,
+            "precision_strict": 0.6686,
+            "f1_strict": 0.7191
+          },
+          {
+            "threshold": 0.3,
+            "hits": 17591,
+            "TP": 12344,
+            "FP_labeled": 3137,
+            "FP_unlabeled": 2110,
+            "T_rows": 15753,
+            "T_detected": 12113,
+            "recall": 0.7689,
+            "precision_labeled": 0.7974,
+            "f1_labeled": 0.7829,
+            "precision_strict": 0.7017,
+            "f1_strict": 0.7338
+          },
+          {
+            "threshold": 0.35,
+            "hits": 16588,
+            "TP": 12267,
+            "FP_labeled": 2757,
+            "FP_unlabeled": 1564,
+            "T_rows": 15753,
+            "T_detected": 12044,
+            "recall": 0.7646,
+            "precision_labeled": 0.8165,
+            "f1_labeled": 0.7897,
+            "precision_strict": 0.7395,
+            "f1_strict": 0.7518
+          },
+          {
+            "threshold": 0.4,
+            "hits": 16005,
+            "TP": 12213,
+            "FP_labeled": 2516,
+            "FP_unlabeled": 1276,
+            "T_rows": 15753,
+            "T_detected": 12008,
+            "recall": 0.7623,
+            "precision_labeled": 0.8292,
+            "f1_labeled": 0.7943,
+            "precision_strict": 0.7631,
+            "f1_strict": 0.7627
+          },
+          {
+            "threshold": 0.45,
+            "hits": 15535,
+            "TP": 12140,
+            "FP_labeled": 2261,
+            "FP_unlabeled": 1134,
+            "T_rows": 15753,
+            "T_detected": 11960,
+            "recall": 0.7592,
+            "precision_labeled": 0.843,
+            "f1_labeled": 0.7989,
+            "precision_strict": 0.7815,
+            "f1_strict": 0.7702
+          },
+          {
+            "threshold": 0.5,
+            "hits": 15049,
+            "TP": 12067,
+            "FP_labeled": 1973,
+            "FP_unlabeled": 1009,
+            "T_rows": 15753,
+            "T_detected": 11898,
+            "recall": 0.7553,
+            "precision_labeled": 0.8595,
+            "f1_labeled": 0.804,
+            "precision_strict": 0.8018,
+            "f1_strict": 0.7779
+          },
+          {
+            "threshold": 0.55,
+            "hits": 14770,
+            "TP": 12014,
+            "FP_labeled": 1836,
+            "FP_unlabeled": 920,
+            "T_rows": 15753,
+            "T_detected": 11853,
+            "recall": 0.7524,
+            "precision_labeled": 0.8674,
+            "f1_labeled": 0.8058,
+            "precision_strict": 0.8134,
+            "f1_strict": 0.7817
+          },
+          {
+            "threshold": 0.6,
+            "hits": 14446,
+            "TP": 11914,
+            "FP_labeled": 1710,
+            "FP_unlabeled": 822,
+            "T_rows": 15753,
+            "T_detected": 11770,
+            "recall": 0.7472,
+            "precision_labeled": 0.8745,
+            "f1_labeled": 0.8058,
+            "precision_strict": 0.8247,
+            "f1_strict": 0.784
+          },
+          {
+            "threshold": 0.65,
+            "hits": 13833,
+            "TP": 11619,
+            "FP_labeled": 1492,
+            "FP_unlabeled": 722,
+            "T_rows": 15753,
+            "T_detected": 11496,
+            "recall": 0.7298,
+            "precision_labeled": 0.8862,
+            "f1_labeled": 0.8004,
+            "precision_strict": 0.8399,
+            "f1_strict": 0.781
+          },
+          {
+            "threshold": 0.7,
+            "hits": 12887,
+            "TP": 10905,
+            "FP_labeled": 1414,
+            "FP_unlabeled": 568,
+            "T_rows": 15753,
+            "T_detected": 10807,
+            "recall": 0.686,
+            "precision_labeled": 0.8852,
+            "f1_labeled": 0.773,
+            "precision_strict": 0.8462,
+            "f1_strict": 0.7577
+          },
+          {
+            "threshold": 0.75,
+            "hits": 11196,
+            "TP": 9974,
+            "FP_labeled": 765,
+            "FP_unlabeled": 457,
+            "T_rows": 15753,
+            "T_detected": 9925,
+            "recall": 0.63,
+            "precision_labeled": 0.9288,
+            "f1_labeled": 0.7508,
+            "precision_strict": 0.8909,
+            "f1_strict": 0.7381
+          },
+          {
+            "threshold": 0.8,
+            "hits": 10023,
+            "TP": 9088,
+            "FP_labeled": 598,
+            "FP_unlabeled": 337,
+            "T_rows": 15753,
+            "T_detected": 9110,
+            "recall": 0.5783,
+            "precision_labeled": 0.9383,
+            "f1_labeled": 0.7156,
+            "precision_strict": 0.9067,
+            "f1_strict": 0.7062
+          },
+          {
+            "threshold": 0.85,
+            "hits": 8761,
+            "TP": 8130,
+            "FP_labeled": 406,
+            "FP_unlabeled": 225,
+            "T_rows": 15753,
+            "T_detected": 8222,
+            "recall": 0.5219,
+            "precision_labeled": 0.9524,
+            "f1_labeled": 0.6743,
+            "precision_strict": 0.928,
+            "f1_strict": 0.6681
+          },
+          {
+            "threshold": 0.9,
+            "hits": 7889,
+            "TP": 7491,
+            "FP_labeled": 265,
+            "FP_unlabeled": 133,
+            "T_rows": 15753,
+            "T_detected": 7654,
+            "recall": 0.4859,
+            "precision_labeled": 0.9658,
+            "f1_labeled": 0.6465,
+            "precision_strict": 0.9496,
+            "f1_strict": 0.6428
+          },
+          {
+            "threshold": 0.95,
+            "hits": 6949,
+            "TP": 6702,
+            "FP_labeled": 152,
+            "FP_unlabeled": 95,
+            "T_rows": 15753,
+            "T_detected": 6897,
+            "recall": 0.4378,
+            "precision_labeled": 0.9778,
+            "f1_labeled": 0.6048,
+            "precision_strict": 0.9645,
+            "f1_strict": 0.6022
+          },
+          {
+            "threshold": 1.0,
+            "hits": 0,
+            "TP": 0,
+            "FP_labeled": 0,
+            "FP_unlabeled": 0,
+            "T_rows": 15753,
+            "T_detected": 0,
+            "recall": 0.0,
+            "precision_labeled": 0.0,
+            "f1_labeled": 0.0,
+            "precision_strict": 0.0,
+            "f1_strict": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "creddata_v2_heldout_report",
+      "title": "Historical v1/v2 comparison on held-out CredData repositories",
+      "dataset": "CredData",
+      "split": "119 test repositories, 26,489 labeled rows as stated in report; crc32(repo) % 5 in {0,1}",
+      "scoring": "Legacy labeled protocol; UUID-only positive rows dropped; strict F1 separately reported",
+      "provenance": "Scanner/V2_REPORT.md",
+      "provenance_details": {
+        "path": "Scanner/V2_REPORT.md",
+        "sha256": "525b61f703568c60017d522154c7584702069f399b907b85ee209385054a2d59"
+      },
+      "notes": [
+        "Manually transcribed from the committed historical report; raw held-out outputs and counts are not present in this local snapshot. Values are rounded to three decimals in that report.",
+        "Full source dataset is reported as 337 repositories and 67,896 labeled lines. The test subset is described as 119 repositories / 26,489 labeled rows; no post-UUID-exclusion row count is supplied.",
+        "The report states fitting and threshold selection used dev repositories only. UUID-only positive rows are dropped at evaluation and treated as negatives in v2 training.",
+        "At BLOCK, v2 has labeled F1 0.810 vs Gitleaks 0.808, with higher recall but lower precision. Strict F1 is 0.771 vs 0.805; do not claim consistent superiority.",
+        "The report cautions that CredSweeper helped define CredData candidate labels and its benchmark mixes train/test data. Its near-0.99 result is not established as an independent out-of-sample competitor result.",
+        "CredData obfuscates secret values, and v2 assumes unlabeled dev candidates are benign. Both affect interpretation of generalization.",
+        "Single seed/run; no confidence intervals. shhgit, wraith, credential-digger and truffleHog3 were not run in this local comparison.",
+        "The historical report mentions v2 iteration-one BLOCK F1 0.819, versus 0.810 for the shipped second iteration; other first-iteration metrics are not supplied."
+      ],
+      "models": [
+        {
+          "name": "CredSweeper 1.19.2",
+          "operating_point": "Tool default",
+          "precision": 0.994,
+          "recall": 0.993,
+          "f1": 0.993,
+          "precision_strict": null,
+          "f1_strict": 0.969,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Gitleaks 8.24.3",
+          "operating_point": "Tool default",
+          "precision": 0.843,
+          "recall": 0.775,
+          "f1": 0.808,
+          "precision_strict": null,
+          "f1_strict": 0.805,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v2",
+          "operating_point": "BLOCK",
+          "precision": 0.748,
+          "recall": 0.883,
+          "f1": 0.81,
+          "precision_strict": null,
+          "f1_strict": 0.771,
+          "threshold": 0.45,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v2",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.673,
+          "recall": 0.921,
+          "f1": 0.778,
+          "precision_strict": null,
+          "f1_strict": 0.681,
+          "threshold": 0.24,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v1",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.474,
+          "recall": 0.781,
+          "f1": 0.59,
+          "precision_strict": null,
+          "f1_strict": 0.476,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v1",
+          "operating_point": "BLOCK",
+          "precision": 0.537,
+          "recall": 0.225,
+          "f1": 0.317,
+          "precision_strict": null,
+          "f1_strict": 0.279,
+          "threshold": 0.7,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v1 + capture-group fix",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.409,
+          "recall": 0.427,
+          "f1": 0.418,
+          "precision_strict": null,
+          "f1_strict": 0.351,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "detect-secrets 1.5.0",
+          "operating_point": "Tool default",
+          "precision": 0.387,
+          "recall": 0.155,
+          "f1": 0.222,
+          "precision_strict": null,
+          "f1_strict": 0.157,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "TruffleHog 3.88.0",
+          "operating_point": "No verification",
+          "precision": 0.441,
+          "recall": 0.009,
+          "f1": 0.018,
+          "precision_strict": null,
+          "f1_strict": 0.017,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        }
+      ]
+    },
+    {
+      "id": "synthetic_v2_tiny_report",
+      "title": "Historical small IaC family test (directional only)",
+      "dataset": "Earlier synthetic IaC benchmark",
+      "split": "cfn and k8s families; 27 true lines",
+      "scoring": "Legacy synthetic line-based protocol as reported",
+      "provenance": "Scanner/V2_REPORT.md",
+      "provenance_details": {
+        "path": "Scanner/V2_REPORT.md",
+        "sha256": "525b61f703568c60017d522154c7584702069f399b907b85ee209385054a2d59"
+      },
+      "notes": [
+        "Transcribed from V2_REPORT.md; rounded metrics only, no raw counts or exact timings in this table.",
+        "Only 27 true lines. v2 was revised after examining this synthetic test, so it is no longer a clean held-out test.",
+        "This is a different dataset from the larger Tier-B saved synthetic results below; neither is the new remote test_ood assessment."
+      ],
+      "models": [
+        {
+          "name": "Ours v1",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.958,
+          "recall": 0.852,
+          "f1": 0.902,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v1 + capture-group fix",
+          "operating_point": "WARN + BLOCK",
+          "precision": 1.0,
+          "recall": 0.852,
+          "f1": 0.92,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v2",
+          "operating_point": "BLOCK",
+          "precision": 0.862,
+          "recall": 0.926,
+          "f1": 0.893,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.45,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v2",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.73,
+          "recall": 1.0,
+          "f1": 0.844,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.24,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "CredSweeper",
+          "operating_point": "Tool default",
+          "precision": 0.913,
+          "recall": 0.778,
+          "f1": 0.84,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Gitleaks",
+          "operating_point": "Tool default",
+          "precision": 1.0,
+          "recall": 0.667,
+          "f1": 0.8,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "detect-secrets",
+          "operating_point": "Tool default",
+          "precision": 0.581,
+          "recall": 0.926,
+          "f1": 0.714,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "TruffleHog",
+          "operating_point": "Tool default",
+          "precision": 1.0,
+          "recall": 0.37,
+          "f1": 0.54,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        }
+      ]
+    },
+    {
+      "id": "tier_b_synthetic_saved",
+      "title": "Saved larger synthetic IaC line-level comparison",
+      "dataset": "Tier-B generated IaC snapshot",
+      "split": "all files represented by saved legacy result (no held-out subset recorded)",
+      "scoring": "Legacy labeled-line precision and positive-label-row recall; strict variant adds unlabeled-line false positives",
+      "provenance": "Dataset/pipeline_bundle/tier_a/out/eval_graph/synthetic_results.json",
+      "provenance_details": {
+        "path": "Dataset/pipeline_bundle/tier_a/out/eval_graph/synthetic_results.json",
+        "sha256": "6ccd6528d2aa9265faf3e517221ac4ebde9210f180e2a4c9ad7b759577f5b2fa"
+      },
+      "notes": [
+        "T_rows=6186; 3980 are private-key PEM line labels. This is a line-level evaluation: detecting one line of a multiline PEM key does not detect all its other labeled lines, which depresses reported recall.",
+        "The later Dataset pipeline evaluator groups each injected value by span_id, counting a multiline key as one span. Its span-level metrics are not interchangeable with these saved line-level metrics.",
+        "Tolerance is zero; X labels are negative; strict false positives include unlabeled lines in all scanned files.",
+        "Saved names ours and ours+fix are preserved; scanner/model version hashes are absent. The saved ours+fix metrics are identical to ours at each threshold, but timings differ.",
+        "The stored legacy result does not include detect-secrets. Missing tool rows must not be filled with zeros.",
+        "Historical dataset counts can differ from the current files/labels snapshot; do not infer current remote dataset size from this result."
+      ],
+      "settings": {
+        "dataset": "synthetic",
+        "repo_split": "all",
+        "tolerance": 0,
+        "x_policy": "negative",
+        "strict_scope": "all-files"
+      },
+      "count_semantics": "raw_metrics.TP counts unique (file,line) hits; T_detected counts detected positive label rows. These can differ. Normalized tp/fp/fn/tn are null to prevent an invalid confusion matrix. missed_positive_rows = T_rows - T_detected.",
+      "models": [
+        {
+          "name": "ours [BLOCK>=0.7]",
+          "operating_point": "BLOCK",
+          "precision": 0.9987,
+          "recall": 0.36,
+          "f1": 0.5292,
+          "precision_strict": 0.9742,
+          "f1_strict": 0.5257,
+          "threshold": 0.7,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 7.364342927932739,
+          "hits": 2286,
+          "raw_metrics": {
+            "hits": 2286,
+            "TP": 2227,
+            "FP_labeled": 3,
+            "FP_unlabeled": 56,
+            "T_rows": 6186,
+            "T_detected": 2227,
+            "recall": 0.36,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5292,
+            "precision_strict": 0.9742,
+            "f1_strict": 0.5257
+          },
+          "missed_positive_rows": 3959,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.067
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                0.995
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.801
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.877
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.788
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.76
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.889
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.638
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.649
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                1.0
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                1.0
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                0.97
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                1.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.005
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "assign",
+              14
+            ],
+            [
+              "rule:generic-password-assignment",
+              11
+            ],
+            [
+              "rule:generic-api-key",
+              11
+            ],
+            [
+              "rule:helm-secret-value",
+              9
+            ],
+            [
+              "entropy",
+              7
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              3
+            ],
+            [
+              "rule:generic-secret-assignment",
+              3
+            ],
+            [
+              "rule:connection-string-password",
+              1
+            ]
+          ]
+        },
+        {
+          "name": "ours [WARN+BLOCK>=0.4]",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.9974,
+          "recall": 0.3789,
+          "f1": 0.5492,
+          "precision_strict": 0.9548,
+          "f1_strict": 0.5425,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 7.364342927932739,
+          "hits": 2455,
+          "raw_metrics": {
+            "hits": 2455,
+            "TP": 2344,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2344,
+            "recall": 0.3789,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5492,
+            "precision_strict": 0.9548,
+            "f1_strict": 0.5425
+          },
+          "missed_positive_rows": 3842,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.082
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                1.0
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.873
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.936
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.834
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.813
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.931
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.688
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.649
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                1.0
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                1.0
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                1.0
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                1.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.008
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.018
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "entropy",
+              34
+            ],
+            [
+              "rule:generic-api-key",
+              26
+            ],
+            [
+              "assign",
+              19
+            ],
+            [
+              "rule:generic-password-assignment",
+              12
+            ],
+            [
+              "rule:helm-secret-value",
+              12
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              4
+            ],
+            [
+              "rule:generic-secret-assignment",
+              3
+            ],
+            [
+              "rule:connection-string-password",
+              1
+            ]
+          ]
+        },
+        {
+          "name": "ours+fix [BLOCK>=0.7]",
+          "operating_point": "BLOCK",
+          "precision": 0.9987,
+          "recall": 0.36,
+          "f1": 0.5292,
+          "precision_strict": 0.9742,
+          "f1_strict": 0.5257,
+          "threshold": 0.7,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 7.292100667953491,
+          "hits": 2286,
+          "raw_metrics": {
+            "hits": 2286,
+            "TP": 2227,
+            "FP_labeled": 3,
+            "FP_unlabeled": 56,
+            "T_rows": 6186,
+            "T_detected": 2227,
+            "recall": 0.36,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5292,
+            "precision_strict": 0.9742,
+            "f1_strict": 0.5257
+          },
+          "missed_positive_rows": 3959,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.067
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                0.995
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.801
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.877
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.788
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.76
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.889
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.638
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.649
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                1.0
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                1.0
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                0.97
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                1.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.005
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "assign",
+              14
+            ],
+            [
+              "rule:generic-password-assignment",
+              11
+            ],
+            [
+              "rule:generic-api-key",
+              11
+            ],
+            [
+              "rule:helm-secret-value",
+              9
+            ],
+            [
+              "entropy",
+              7
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              3
+            ],
+            [
+              "rule:generic-secret-assignment",
+              3
+            ],
+            [
+              "rule:connection-string-password",
+              1
+            ]
+          ]
+        },
+        {
+          "name": "ours+fix [WARN+BLOCK>=0.4]",
+          "operating_point": "WARN + BLOCK",
+          "precision": 0.9974,
+          "recall": 0.3789,
+          "f1": 0.5492,
+          "precision_strict": 0.9548,
+          "f1_strict": 0.5425,
+          "threshold": 0.4,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 7.292100667953491,
+          "hits": 2455,
+          "raw_metrics": {
+            "hits": 2455,
+            "TP": 2344,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2344,
+            "recall": 0.3789,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5492,
+            "precision_strict": 0.9548,
+            "f1_strict": 0.5425
+          },
+          "missed_positive_rows": 3842,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.082
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                1.0
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.873
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.936
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.834
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.813
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.931
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.688
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.649
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                1.0
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                1.0
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                1.0
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                1.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.008
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.018
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "entropy",
+              34
+            ],
+            [
+              "rule:generic-api-key",
+              26
+            ],
+            [
+              "assign",
+              19
+            ],
+            [
+              "rule:generic-password-assignment",
+              12
+            ],
+            [
+              "rule:helm-secret-value",
+              12
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              4
+            ],
+            [
+              "rule:generic-secret-assignment",
+              3
+            ],
+            [
+              "rule:connection-string-password",
+              1
+            ]
+          ]
+        },
+        {
+          "name": "gitleaks",
+          "operating_point": "Tool default",
+          "precision": 0.9951,
+          "recall": 0.2641,
+          "f1": 0.4175,
+          "precision_strict": 0.9692,
+          "f1_strict": 0.4151,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 3.533008098602295,
+          "hits": 1686,
+          "raw_metrics": {
+            "hits": 1686,
+            "TP": 1634,
+            "FP_labeled": 8,
+            "FP_unlabeled": 44,
+            "T_rows": 6186,
+            "T_detected": 1634,
+            "recall": 0.2641,
+            "precision_labeled": 0.9951,
+            "f1_labeled": 0.4175,
+            "precision_strict": 0.9692,
+            "f1_strict": 0.4151
+          },
+          "missed_positive_rows": 4552,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.054
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                0.0
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.768
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.807
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.252
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.76
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.819
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.206
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.619
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                1.0
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                1.0
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                1.0
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                0.99
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                0.99
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.012
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "rule:kubernetes-secret-yaml",
+              27
+            ],
+            [
+              "rule:hashicorp-tf-password",
+              13
+            ],
+            [
+              "rule:generic-api-key",
+              12
+            ]
+          ]
+        },
+        {
+          "name": "trufflehog",
+          "operating_point": "Tool default",
+          "precision": 0.9986,
+          "recall": 0.1138,
+          "f1": 0.2043,
+          "precision_strict": 0.9986,
+          "f1_strict": 0.2043,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": 3.1876089572906494,
+          "hits": 705,
+          "raw_metrics": {
+            "hits": 705,
+            "TP": 704,
+            "FP_labeled": 1,
+            "FP_unlabeled": 0,
+            "T_rows": 6186,
+            "T_detected": 704,
+            "recall": 0.1138,
+            "precision_labeled": 0.9986,
+            "f1_labeled": 0.2043,
+            "precision_strict": 0.9986,
+            "f1_strict": 0.2043
+          },
+          "missed_positive_rows": 5482,
+          "categories": {
+            "secret_recall_by_category": [
+              [
+                "secret_known_format:private_key_pem",
+                3980,
+                0.0
+              ],
+              [
+                "unknown_format_secret:connection_string",
+                371,
+                0.544
+              ],
+              [
+                "unknown_format_secret:custom_token",
+                181,
+                0.0
+              ],
+              [
+                "unknown_format_secret:generic_token_urlsafe",
+                171,
+                0.0
+              ],
+              [
+                "unknown_format_secret:db_password_random",
+                151,
+                0.0
+              ],
+              [
+                "unknown_format_secret:generic_api_key_hex",
+                150,
+                0.033
+              ],
+              [
+                "secret_known_format:github_pat",
+                150,
+                0.993
+              ],
+              [
+                "secret_known_format:aws_secret_access_key",
+                144,
+                0.0
+              ],
+              [
+                "low_entropy_secret:db_password_human",
+                141,
+                0.0
+              ],
+              [
+                "unknown_format_secret:webhook_secret",
+                134,
+                0.0
+              ],
+              [
+                "secret_known_format:azure_client_secret",
+                111,
+                0.982
+              ],
+              [
+                "secret_known_format:slack_bot_token",
+                106,
+                0.991
+              ],
+              [
+                "secret_known_format:aws_access_key_id",
+                101,
+                0.04
+              ],
+              [
+                "secret_known_format:jwt",
+                100,
+                0.31
+              ],
+              [
+                "secret_known_format:stripe_secret",
+                99,
+                1.0
+              ]
+            ],
+            "nonsecret_flag_rate_by_category": [
+              [
+                "placeholder",
+                664,
+                0.0
+              ],
+              [
+                "reference",
+                638,
+                0.0
+              ],
+              [
+                "trap:digest",
+                79,
+                0.0
+              ],
+              [
+                "trap:sha1",
+                79,
+                0.013
+              ],
+              [
+                "trap:sha256",
+                73,
+                0.0
+              ],
+              [
+                "trap:md5",
+                69,
+                0.0
+              ],
+              [
+                "trap:account",
+                67,
+                0.0
+              ],
+              [
+                "trap:ami",
+                63,
+                0.0
+              ],
+              [
+                "trap:subnet",
+                60,
+                0.0
+              ],
+              [
+                "trap:uuid",
+                57,
+                0.0
+              ]
+            ]
+          },
+          "top_false_positive_sources": [
+            [
+              "detector",
+              1
+            ]
+          ]
+        }
+      ],
+      "threshold_sweeps": {
+        "ours": [
+          {
+            "threshold": 0.05,
+            "hits": 3406,
+            "TP": 2452,
+            "FP_labeled": 104,
+            "FP_unlabeled": 850,
+            "T_rows": 6186,
+            "T_detected": 2452,
+            "recall": 0.3964,
+            "precision_labeled": 0.9593,
+            "f1_labeled": 0.561,
+            "precision_strict": 0.7199,
+            "f1_strict": 0.5113
+          },
+          {
+            "threshold": 0.1,
+            "hits": 2941,
+            "TP": 2432,
+            "FP_labeled": 39,
+            "FP_unlabeled": 470,
+            "T_rows": 6186,
+            "T_detected": 2432,
+            "recall": 0.3931,
+            "precision_labeled": 0.9842,
+            "f1_labeled": 0.5619,
+            "precision_strict": 0.8269,
+            "f1_strict": 0.5329
+          },
+          {
+            "threshold": 0.15,
+            "hits": 2739,
+            "TP": 2413,
+            "FP_labeled": 19,
+            "FP_unlabeled": 307,
+            "T_rows": 6186,
+            "T_detected": 2413,
+            "recall": 0.3901,
+            "precision_labeled": 0.9922,
+            "f1_labeled": 0.56,
+            "precision_strict": 0.881,
+            "f1_strict": 0.5407
+          },
+          {
+            "threshold": 0.2,
+            "hits": 2624,
+            "TP": 2397,
+            "FP_labeled": 10,
+            "FP_unlabeled": 217,
+            "T_rows": 6186,
+            "T_detected": 2397,
+            "recall": 0.3875,
+            "precision_labeled": 0.9958,
+            "f1_labeled": 0.5579,
+            "precision_strict": 0.9135,
+            "f1_strict": 0.5442
+          },
+          {
+            "threshold": 0.25,
+            "hits": 2550,
+            "TP": 2386,
+            "FP_labeled": 7,
+            "FP_unlabeled": 157,
+            "T_rows": 6186,
+            "T_detected": 2386,
+            "recall": 0.3857,
+            "precision_labeled": 0.9971,
+            "f1_labeled": 0.5562,
+            "precision_strict": 0.9357,
+            "f1_strict": 0.5462
+          },
+          {
+            "threshold": 0.3,
+            "hits": 2507,
+            "TP": 2372,
+            "FP_labeled": 6,
+            "FP_unlabeled": 129,
+            "T_rows": 6186,
+            "T_detected": 2372,
+            "recall": 0.3834,
+            "precision_labeled": 0.9975,
+            "f1_labeled": 0.5539,
+            "precision_strict": 0.9462,
+            "f1_strict": 0.5457
+          },
+          {
+            "threshold": 0.35,
+            "hits": 2473,
+            "TP": 2360,
+            "FP_labeled": 6,
+            "FP_unlabeled": 107,
+            "T_rows": 6186,
+            "T_detected": 2360,
+            "recall": 0.3815,
+            "precision_labeled": 0.9975,
+            "f1_labeled": 0.5519,
+            "precision_strict": 0.9543,
+            "f1_strict": 0.5451
+          },
+          {
+            "threshold": 0.4,
+            "hits": 2455,
+            "TP": 2344,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2344,
+            "recall": 0.3789,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5492,
+            "precision_strict": 0.9548,
+            "f1_strict": 0.5425
+          },
+          {
+            "threshold": 0.45,
+            "hits": 2440,
+            "TP": 2329,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2329,
+            "recall": 0.3765,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5466,
+            "precision_strict": 0.9545,
+            "f1_strict": 0.54
+          },
+          {
+            "threshold": 0.5,
+            "hits": 2411,
+            "TP": 2308,
+            "FP_labeled": 5,
+            "FP_unlabeled": 98,
+            "T_rows": 6186,
+            "T_detected": 2308,
+            "recall": 0.3731,
+            "precision_labeled": 0.9978,
+            "f1_labeled": 0.5431,
+            "precision_strict": 0.9573,
+            "f1_strict": 0.5369
+          },
+          {
+            "threshold": 0.55,
+            "hits": 2382,
+            "TP": 2290,
+            "FP_labeled": 4,
+            "FP_unlabeled": 88,
+            "T_rows": 6186,
+            "T_detected": 2290,
+            "recall": 0.3702,
+            "precision_labeled": 0.9983,
+            "f1_labeled": 0.5401,
+            "precision_strict": 0.9614,
+            "f1_strict": 0.5345
+          },
+          {
+            "threshold": 0.6,
+            "hits": 2333,
+            "TP": 2266,
+            "FP_labeled": 3,
+            "FP_unlabeled": 64,
+            "T_rows": 6186,
+            "T_detected": 2266,
+            "recall": 0.3663,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.536,
+            "precision_strict": 0.9713,
+            "f1_strict": 0.532
+          },
+          {
+            "threshold": 0.65,
+            "hits": 2314,
+            "TP": 2251,
+            "FP_labeled": 3,
+            "FP_unlabeled": 60,
+            "T_rows": 6186,
+            "T_detected": 2251,
+            "recall": 0.3639,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5334,
+            "precision_strict": 0.9728,
+            "f1_strict": 0.5296
+          },
+          {
+            "threshold": 0.7,
+            "hits": 2286,
+            "TP": 2227,
+            "FP_labeled": 3,
+            "FP_unlabeled": 56,
+            "T_rows": 6186,
+            "T_detected": 2227,
+            "recall": 0.36,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5292,
+            "precision_strict": 0.9742,
+            "f1_strict": 0.5257
+          },
+          {
+            "threshold": 0.75,
+            "hits": 2241,
+            "TP": 2197,
+            "FP_labeled": 3,
+            "FP_unlabeled": 41,
+            "T_rows": 6186,
+            "T_detected": 2197,
+            "recall": 0.3552,
+            "precision_labeled": 0.9986,
+            "f1_labeled": 0.524,
+            "precision_strict": 0.9804,
+            "f1_strict": 0.5214
+          },
+          {
+            "threshold": 0.8,
+            "hits": 2196,
+            "TP": 2156,
+            "FP_labeled": 3,
+            "FP_unlabeled": 37,
+            "T_rows": 6186,
+            "T_detected": 2156,
+            "recall": 0.3485,
+            "precision_labeled": 0.9986,
+            "f1_labeled": 0.5167,
+            "precision_strict": 0.9818,
+            "f1_strict": 0.5144
+          },
+          {
+            "threshold": 0.85,
+            "hits": 2148,
+            "TP": 2111,
+            "FP_labeled": 2,
+            "FP_unlabeled": 35,
+            "T_rows": 6186,
+            "T_detected": 2111,
+            "recall": 0.3413,
+            "precision_labeled": 0.9991,
+            "f1_labeled": 0.5087,
+            "precision_strict": 0.9828,
+            "f1_strict": 0.5066
+          },
+          {
+            "threshold": 0.9,
+            "hits": 2067,
+            "TP": 2035,
+            "FP_labeled": 1,
+            "FP_unlabeled": 31,
+            "T_rows": 6186,
+            "T_detected": 2035,
+            "recall": 0.329,
+            "precision_labeled": 0.9995,
+            "f1_labeled": 0.495,
+            "precision_strict": 0.9845,
+            "f1_strict": 0.4932
+          },
+          {
+            "threshold": 0.95,
+            "hits": 1942,
+            "TP": 1912,
+            "FP_labeled": 0,
+            "FP_unlabeled": 30,
+            "T_rows": 6186,
+            "T_detected": 1912,
+            "recall": 0.3091,
+            "precision_labeled": 1.0,
+            "f1_labeled": 0.4722,
+            "precision_strict": 0.9846,
+            "f1_strict": 0.4705
+          },
+          {
+            "threshold": 1.0,
+            "hits": 0,
+            "TP": 0,
+            "FP_labeled": 0,
+            "FP_unlabeled": 0,
+            "T_rows": 6186,
+            "T_detected": 0,
+            "recall": 0.0,
+            "precision_labeled": 0.0,
+            "f1_labeled": 0.0,
+            "precision_strict": 0.0,
+            "f1_strict": 0.0
+          }
+        ],
+        "ours+fix": [
+          {
+            "threshold": 0.05,
+            "hits": 3406,
+            "TP": 2452,
+            "FP_labeled": 104,
+            "FP_unlabeled": 850,
+            "T_rows": 6186,
+            "T_detected": 2452,
+            "recall": 0.3964,
+            "precision_labeled": 0.9593,
+            "f1_labeled": 0.561,
+            "precision_strict": 0.7199,
+            "f1_strict": 0.5113
+          },
+          {
+            "threshold": 0.1,
+            "hits": 2941,
+            "TP": 2432,
+            "FP_labeled": 39,
+            "FP_unlabeled": 470,
+            "T_rows": 6186,
+            "T_detected": 2432,
+            "recall": 0.3931,
+            "precision_labeled": 0.9842,
+            "f1_labeled": 0.5619,
+            "precision_strict": 0.8269,
+            "f1_strict": 0.5329
+          },
+          {
+            "threshold": 0.15,
+            "hits": 2739,
+            "TP": 2413,
+            "FP_labeled": 19,
+            "FP_unlabeled": 307,
+            "T_rows": 6186,
+            "T_detected": 2413,
+            "recall": 0.3901,
+            "precision_labeled": 0.9922,
+            "f1_labeled": 0.56,
+            "precision_strict": 0.881,
+            "f1_strict": 0.5407
+          },
+          {
+            "threshold": 0.2,
+            "hits": 2624,
+            "TP": 2397,
+            "FP_labeled": 10,
+            "FP_unlabeled": 217,
+            "T_rows": 6186,
+            "T_detected": 2397,
+            "recall": 0.3875,
+            "precision_labeled": 0.9958,
+            "f1_labeled": 0.5579,
+            "precision_strict": 0.9135,
+            "f1_strict": 0.5442
+          },
+          {
+            "threshold": 0.25,
+            "hits": 2550,
+            "TP": 2386,
+            "FP_labeled": 7,
+            "FP_unlabeled": 157,
+            "T_rows": 6186,
+            "T_detected": 2386,
+            "recall": 0.3857,
+            "precision_labeled": 0.9971,
+            "f1_labeled": 0.5562,
+            "precision_strict": 0.9357,
+            "f1_strict": 0.5462
+          },
+          {
+            "threshold": 0.3,
+            "hits": 2507,
+            "TP": 2372,
+            "FP_labeled": 6,
+            "FP_unlabeled": 129,
+            "T_rows": 6186,
+            "T_detected": 2372,
+            "recall": 0.3834,
+            "precision_labeled": 0.9975,
+            "f1_labeled": 0.5539,
+            "precision_strict": 0.9462,
+            "f1_strict": 0.5457
+          },
+          {
+            "threshold": 0.35,
+            "hits": 2473,
+            "TP": 2360,
+            "FP_labeled": 6,
+            "FP_unlabeled": 107,
+            "T_rows": 6186,
+            "T_detected": 2360,
+            "recall": 0.3815,
+            "precision_labeled": 0.9975,
+            "f1_labeled": 0.5519,
+            "precision_strict": 0.9543,
+            "f1_strict": 0.5451
+          },
+          {
+            "threshold": 0.4,
+            "hits": 2455,
+            "TP": 2344,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2344,
+            "recall": 0.3789,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5492,
+            "precision_strict": 0.9548,
+            "f1_strict": 0.5425
+          },
+          {
+            "threshold": 0.45,
+            "hits": 2440,
+            "TP": 2329,
+            "FP_labeled": 6,
+            "FP_unlabeled": 105,
+            "T_rows": 6186,
+            "T_detected": 2329,
+            "recall": 0.3765,
+            "precision_labeled": 0.9974,
+            "f1_labeled": 0.5466,
+            "precision_strict": 0.9545,
+            "f1_strict": 0.54
+          },
+          {
+            "threshold": 0.5,
+            "hits": 2411,
+            "TP": 2308,
+            "FP_labeled": 5,
+            "FP_unlabeled": 98,
+            "T_rows": 6186,
+            "T_detected": 2308,
+            "recall": 0.3731,
+            "precision_labeled": 0.9978,
+            "f1_labeled": 0.5431,
+            "precision_strict": 0.9573,
+            "f1_strict": 0.5369
+          },
+          {
+            "threshold": 0.55,
+            "hits": 2382,
+            "TP": 2290,
+            "FP_labeled": 4,
+            "FP_unlabeled": 88,
+            "T_rows": 6186,
+            "T_detected": 2290,
+            "recall": 0.3702,
+            "precision_labeled": 0.9983,
+            "f1_labeled": 0.5401,
+            "precision_strict": 0.9614,
+            "f1_strict": 0.5345
+          },
+          {
+            "threshold": 0.6,
+            "hits": 2333,
+            "TP": 2266,
+            "FP_labeled": 3,
+            "FP_unlabeled": 64,
+            "T_rows": 6186,
+            "T_detected": 2266,
+            "recall": 0.3663,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.536,
+            "precision_strict": 0.9713,
+            "f1_strict": 0.532
+          },
+          {
+            "threshold": 0.65,
+            "hits": 2314,
+            "TP": 2251,
+            "FP_labeled": 3,
+            "FP_unlabeled": 60,
+            "T_rows": 6186,
+            "T_detected": 2251,
+            "recall": 0.3639,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5334,
+            "precision_strict": 0.9728,
+            "f1_strict": 0.5296
+          },
+          {
+            "threshold": 0.7,
+            "hits": 2286,
+            "TP": 2227,
+            "FP_labeled": 3,
+            "FP_unlabeled": 56,
+            "T_rows": 6186,
+            "T_detected": 2227,
+            "recall": 0.36,
+            "precision_labeled": 0.9987,
+            "f1_labeled": 0.5292,
+            "precision_strict": 0.9742,
+            "f1_strict": 0.5257
+          },
+          {
+            "threshold": 0.75,
+            "hits": 2241,
+            "TP": 2197,
+            "FP_labeled": 3,
+            "FP_unlabeled": 41,
+            "T_rows": 6186,
+            "T_detected": 2197,
+            "recall": 0.3552,
+            "precision_labeled": 0.9986,
+            "f1_labeled": 0.524,
+            "precision_strict": 0.9804,
+            "f1_strict": 0.5214
+          },
+          {
+            "threshold": 0.8,
+            "hits": 2196,
+            "TP": 2156,
+            "FP_labeled": 3,
+            "FP_unlabeled": 37,
+            "T_rows": 6186,
+            "T_detected": 2156,
+            "recall": 0.3485,
+            "precision_labeled": 0.9986,
+            "f1_labeled": 0.5167,
+            "precision_strict": 0.9818,
+            "f1_strict": 0.5144
+          },
+          {
+            "threshold": 0.85,
+            "hits": 2148,
+            "TP": 2111,
+            "FP_labeled": 2,
+            "FP_unlabeled": 35,
+            "T_rows": 6186,
+            "T_detected": 2111,
+            "recall": 0.3413,
+            "precision_labeled": 0.9991,
+            "f1_labeled": 0.5087,
+            "precision_strict": 0.9828,
+            "f1_strict": 0.5066
+          },
+          {
+            "threshold": 0.9,
+            "hits": 2067,
+            "TP": 2035,
+            "FP_labeled": 1,
+            "FP_unlabeled": 31,
+            "T_rows": 6186,
+            "T_detected": 2035,
+            "recall": 0.329,
+            "precision_labeled": 0.9995,
+            "f1_labeled": 0.495,
+            "precision_strict": 0.9845,
+            "f1_strict": 0.4932
+          },
+          {
+            "threshold": 0.95,
+            "hits": 1942,
+            "TP": 1912,
+            "FP_labeled": 0,
+            "FP_unlabeled": 30,
+            "T_rows": 6186,
+            "T_detected": 1912,
+            "recall": 0.3091,
+            "precision_labeled": 1.0,
+            "f1_labeled": 0.4722,
+            "precision_strict": 0.9846,
+            "f1_strict": 0.4705
+          },
+          {
+            "threshold": 1.0,
+            "hits": 0,
+            "TP": 0,
+            "FP_labeled": 0,
+            "FP_unlabeled": 0,
+            "T_rows": 6186,
+            "T_detected": 0,
+            "recall": 0.0,
+            "precision_labeled": 0.0,
+            "f1_labeled": 0.0,
+            "precision_strict": 0.0,
+            "f1_strict": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "v2_shipped_oof",
+      "title": "Shipped gradient-boosted v2 model: development out-of-fold results",
+      "dataset": "CredData dev + synthetic train families",
+      "split": "dev (crc32(repo)%5 not in {0,1})",
+      "scoring": "Development group out-of-fold threshold-selection metrics; not test metrics",
+      "provenance": "Scanner/scanner/model_v2.json",
+      "provenance_details": {
+        "path": "Scanner/scanner/model_v2.json",
+        "sha256": "62ea32a9864253a38c149d068d6ab921f3fa77f1077ff44db03425307a5c7b03"
+      },
+      "notes": [
+        "The shipped file contains 197 features and 300 boosted trees; it is not CodeBERT or UniXcoder.",
+        "These out-of-fold estimates were used to choose WARN (maximum F1) and BLOCK (lowest threshold meeting 0.90 development precision). They are not performance guarantees for the test set.",
+        "Five GroupKFold splits are used by training/train_v2.py. Training metadata reports 131095 candidates, 8530 positives, synthetic weight 5.0, and unlabeled negatives enabled.",
+        "The metadata reports candidate recall 0.8975 and AUC 0.9765. Both belong to development evaluation, not the remote DL test."
+      ],
+      "models": [
+        {
+          "name": "Ours v2",
+          "operating_point": "WARN",
+          "precision": 0.8544,
+          "recall": 0.7965,
+          "f1": 0.8244,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.24,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Ours v2",
+          "operating_point": "BLOCK",
+          "precision": 0.9007,
+          "recall": 0.7511,
+          "f1": 0.8191,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": 0.45,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        }
+      ],
+      "development_auc": 0.9765,
+      "development_candidate_recall": 0.8975,
+      "model_summary": {
+        "feature_count": 197,
+        "tree_count": 300,
+        "thresholds": {
+          "warn": 0.24,
+          "block": 0.45
+        },
+        "trained_on": {
+          "creddata_split": "dev (crc32(repo)%5 not in {0,1})",
+          "synthetic_split": "train families only",
+          "candidates": 131095,
+          "positives": 8530,
+          "unlabeled_negatives": true,
+          "synthetic_weight": 5.0,
+          "drop_uuid_positive": true
+        }
+      }
+    },
+    {
+      "id": "creddata_2022_secondary_reference",
+      "title": "Historical external CredData table quoted by the v2 report",
+      "dataset": "CredData README table (April 2022, per V2_REPORT.md)",
+      "split": "all data; external historical reference",
+      "scoring": "Different historical scoring; only F1 quoted locally",
+      "provenance": "Scanner/V2_REPORT.md (secondary quotation, not re-run or independently retrieved)",
+      "provenance_details": {
+        "path": "Scanner/V2_REPORT.md",
+        "sha256": "525b61f703568c60017d522154c7584702069f399b907b85ee209385054a2d59"
+      },
+      "notes": [
+        "Included to preserve the previous report, not as a newly verified benchmark. These F1 values were quoted in V2_REPORT.md from an April 2022 CredData README.",
+        "Different scoring, scanner versions and dataset protocol. Do not rank these together with the local or remote experiments."
+      ],
+      "models": [
+        {
+          "name": "CredSweeper",
+          "operating_point": "Historical external table",
+          "precision": null,
+          "recall": null,
+          "f1": 0.859,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "Gitleaks",
+          "operating_point": "Historical external table",
+          "precision": null,
+          "recall": null,
+          "f1": 0.334,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "detect-secrets",
+          "operating_point": "Historical external table",
+          "precision": null,
+          "recall": null,
+          "f1": 0.206,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "truffleHog3",
+          "operating_point": "Historical external table",
+          "precision": null,
+          "recall": null,
+          "f1": 0.235,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        },
+        {
+          "name": "truffleHog",
+          "operating_point": "Historical external table",
+          "precision": null,
+          "recall": null,
+          "f1": 0.018,
+          "precision_strict": null,
+          "f1_strict": null,
+          "threshold": null,
+          "tp": null,
+          "fp": null,
+          "fn": null,
+          "tn": null,
+          "seconds": null
+        }
+      ]
+    }
+  ]
+}
