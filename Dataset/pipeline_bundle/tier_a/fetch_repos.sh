@@ -1,6 +1,6 @@
 #!/bin/bash
-# Fetch every repo in manifest.csv at its pinned commit (shallow, no history).
-# usage: ./fetch_repos.sh [manifest.csv] [outdir]
+# Fetch every repo in manifest_v2.csv at its pinned commit (shallow, no history).
+# usage: ./fetch_repos.sh [manifest_v2.csv] [outdir]
 set -u
 manifest="${1:-manifest_v2.csv}"; out="${2:-repos}"
 mkdir -p "$out"

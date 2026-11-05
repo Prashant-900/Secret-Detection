@@ -17,7 +17,6 @@ import html
 import importlib.metadata
 import json
 import math
-import os
 from pathlib import Path
 import re
 import sys
@@ -339,20 +338,64 @@ def make_html(markdown_text, out):
 </style></head><body><main>""" + body + "</main></body></html>"
 
 
-def relocated_markdown(text, out):
-    """Keep relative source citations usable after copying documentation deeper."""
-    def replace(match):
-        target = match.group(1)
-        if "://" in target or target.startswith("#"):
-            return match.group(0)
-        path_part, marker, fragment = target.partition("#")
-        path = (BUNDLE / path_part).resolve()
-        if path_part in ("PROJECT_EXPLAINED.md", "HISTORICAL_RESULTS.md", "data/historical_results.json"):
-            link = path_part
-        else:
-            link = Path(os.path.relpath(path, out)).as_posix()
-        return "](" + link + (marker + fragment if marker else "") + ")"
-    return re.sub(r"\]\(([^)\n]+)\)", replace, text)
+def historical_markdown(historical):
+    """Render the saved evidence directly; background Markdown is not an input."""
+    sections = [cell(historical.get("description")), cell(historical.get("metric_convention")),
+                "The full historical record, including source hashes and nested counts, is in "
+                "[data/historical_results.json](data/historical_results.json). Historical source paths "
+                "identify the recorded snapshot and may not exist in the current checkout. "
+                "These protocols must be interpreted separately from the current span evaluation."]
+    metrics = [("name", "Tool / model"), ("operating_point", "Operating point"),
+               ("threshold", "Threshold"), ("precision", "Precision"), ("recall", "Recall"),
+               ("f1", "F1"), ("precision_strict", "Strict precision"),
+               ("f1_strict", "Strict F1"), ("seconds", "Seconds")]
+    for experiment in historical.get("experiments", []):
+        sections += ["### " + cell(experiment["title"]),
+                     table([{"field": k, "value": experiment.get(k)} for k in
+                            ("dataset", "split", "scoring", "provenance")], [("field", "Field"), ("value", "Recorded value")]),
+                     table(experiment["models"], metrics)]
+        sections += ["- " + cell(note) for note in experiment.get("notes", [])]
+        if experiment.get("count_semantics"):
+            sections += [cell(experiment["count_semantics"])]
+        for key in ("settings", "provenance_details", "development_auc", "development_candidate_recall", "model_summary"):
+            if key in experiment:
+                value = experiment[key]
+                sections += ["**" + cell(key.replace("_", " ")) + ":** " +
+                             cell(json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value)]
+        for model in experiment["models"]:
+            details = []
+            if model.get("raw_metrics"):
+                details += ["Saved hit and label-row counts:",
+                            table([{"field": k, "value": v} for k, v in model["raw_metrics"].items()],
+                                  [("field", "Field"), ("value", "Recorded value")])]
+            for category, rows in model.get("categories", {}).items():
+                details += [cell(category.replace("_", " ")) + ":",
+                            table([{"category": r[0], "support": r[1], "rate": r[2]} for r in rows],
+                                  [("category", "Category"), ("support", "Label support"), ("rate", "Rate")])]
+            if model.get("top_false_positive_sources"):
+                details += ["Saved false-positive sources:",
+                            table([{"source": r[0], "hits": r[1]} for r in model["top_false_positive_sources"]],
+                                  [("source", "Source"), ("hits", "Hits")])]
+            if details:
+                sections += ["#### " + cell(model["name"]), *details]
+        for name, rows in experiment.get("threshold_sweeps", {}).items():
+            sections += ["#### Recorded threshold sweep: " + cell(name),
+                         "Descriptive historical sweep; do not use it to retune a final-test threshold.",
+                         table(rows, [(key, key) for key in dict.fromkeys(k for row in rows for k in row)])]
+    return "\n\n".join(sections)
+
+
+def project_overview(readme):
+    """Reuse the root guide's workflow and interpretation without copying guides."""
+    text = Path(readme).read_text(encoding="utf-8")
+    sections = re.split(r"(?=^## )", text, flags=re.MULTILINE)
+    selected = [part for part in sections if part.startswith(("## Workflow and", "## Methodology and"))]
+    if not selected:
+        selected = [sections[0]]
+    overview = "\n\n".join(selected)
+    # The report includes the explanatory content; source paths remain labels.
+    overview = re.sub(r"\[([^\]]+)\]\((?!https?://)[^)]+\)", r"\1", overview)
+    return re.sub(r"^(#{1,5}) ", r"#\1 ", overview, flags=re.MULTILINE)
 
 
 def build(args):
@@ -677,7 +720,7 @@ def build(args):
             report["baseline_results"].append({"file": inputs.label(path), "summary": row, "legacy_training_overlap_caveat": base.get("legacy_training_overlap_caveat"), "localization_note": base.get("localization_note")})
     csv_table(out / "tables" / "current_baselines.csv", baseline_rows)
     sections += [table(baseline_rows, [("tool", "Tool"), ("split", "Split"), ("operating_point", "Gate"), ("scope", "Scope"), ("precision", "Precision"), ("recall", "Recall"), ("f1", "F1"), ("unknown_alerts_per_kloc", "Unknown/KLOC")]),
-                 "If no current baseline files exist, the three commands you ran did not create them. See the reporting README for optional baseline commands. The shipped legacy model may overlap its original training repositories even under the new scoring protocol; detector localization also differs."]
+                 "If no current baseline files exist, the assessment commands did not create them. See the root README for optional baseline commands. The shipped legacy model may overlap its original training repositories even under the new scoring protocol; detector localization also differs."]
     if baseline_rows:
         for split in sorted({r["split"] for r in baseline_rows}):
             rows = [r for r in baseline_rows if r["split"] == split]
@@ -698,15 +741,14 @@ def build(args):
                              {s.title(): [r.get(s) for r in models] for s in SCORES}, bounded=True,
                              caption="Historical protocol only. " + " ".join(experiment.get("notes", [])[:2]))
     csv_table(out / "tables" / "historical_results.csv", historical_rows)
-    historical_md = (BUNDLE / "HISTORICAL_RESULTS.md").read_text(encoding="utf-8")
-    historical_md = relocated_markdown(historical_md, out)
-    # Keep all recorded historical tables in the generated report README itself.
-    historical_md = re.sub(r"^(#{1,5}) ", r"#\1 ", historical_md, flags=re.MULTILINE)
-    sections += ["## Previous scanner results and benchmark history", historical_md]
-    for name in ("PROJECT_EXPLAINED.md", "HISTORICAL_RESULTS.md"):
-        (out / name).write_text(relocated_markdown((BUNDLE / name).read_text(encoding="utf-8"), out), encoding="utf-8")
-    sections += ["## Model and scanner design", "The complete walkthrough is included as [PROJECT_EXPLAINED.md](PROJECT_EXPLAINED.md). It documents the original rule/feature scanner, deterministic dataset labels, local-LLM scaffolds, CodeBERT/UniXcoder sequence classification, weighted loss, validation selection, ensemble probability averaging, and CI gating.",
-                 "## Plot gallery", "Every available plot is saved as PNG and SVG. CSV files retain full tables even where charts show the 25 largest strata."]
+    sections += ["## Previous scanner results and benchmark history",
+                 historical_markdown(historical) if historical else
+                 "Historical comparison data is unavailable for this incomplete report."]
+    readme = root / "README.md"
+    if readme.is_file():
+        inputs.track(readme)
+        sections += ["## Model and scanner design", project_overview(readme)]
+    sections += ["## Plot gallery", "Every available plot is saved as PNG and SVG. CSV files retain full tables even where charts show the 25 largest strata."]
     for item in plots.items:
         sections += ["### " + cell(item["title"]), f"![{cell(item['title'])}](plots/{item['filename']})", cell(item.get("caption", ""))]
     report["missing_artifacts"] = inputs.missing
@@ -721,7 +763,7 @@ def build(args):
     (out / "README.md").write_text(content, encoding="utf-8")
     (out / "report.html").write_text(make_html(content, out), encoding="utf-8")
     write_json(out / "report.json", report)
-    for p in (BUNDLE / "build_report.py", BUNDLE / "plotting.py", BUNDLE / "report_stats.py", BUNDLE / "PROJECT_EXPLAINED.md", BUNDLE / "HISTORICAL_RESULTS.md", root / "secrets_pipeline" / "evaluate.py"):
+    for p in (BUNDLE / "build_report.py", BUNDLE / "plotting.py", BUNDLE / "report_stats.py", root / "secrets_pipeline" / "evaluate.py"):
         inputs.track(p)
     versions = {"python": sys.version, "matplotlib": importlib.metadata.version("matplotlib"), "Markdown": importlib.metadata.version("Markdown")}
     write_json(out / "input_manifest.json", {"created_utc": stamp, "project_root": str(root), "files": list(inputs.inventory.values()), "versions": versions,

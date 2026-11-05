@@ -8,7 +8,7 @@ Rules
      across train and test.
   3. within that, families are balanced greedily to ~70 / 10 / 20 (train / val / test).
 
-usage: python make_split.py --manifest manifest.csv --out splits.csv [--seed 13]
+usage: python make_split.py --manifest manifest_v2.csv --out splits.csv [--seed 13]
 Commit splits.csv and never regenerate it after seeing results.
 """
 import argparse

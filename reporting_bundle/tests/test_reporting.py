@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import contextlib
 import copy
+import html
 import io
 import json
 import math
@@ -297,6 +298,10 @@ class ReportIntegrationTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.fixture = build_fixture(self.root)
+        (self.root / "README.md").write_text(
+            "# Fixture project\n\n## Workflow and repository layout\n\n"
+            "Saved workflows use frozen inputs.\n\n## Methodology and result interpretation\n\n"
+            "Unknown regions remain unknown.\n", encoding="utf-8")
         self.out = self.root / "report-output"
 
     def invoke(self, *extra):
@@ -310,7 +315,7 @@ class ReportIntegrationTests(unittest.TestCase):
         code, stdout, stderr = self.invoke()
         self.assertEqual(code, 0, stderr)
         for filename in ("report.html", "README.md", "report.json", "input_manifest.json",
-                         "PROJECT_EXPLAINED.md", "HISTORICAL_RESULTS.md", "data/historical_results.json"):
+                         "data/historical_results.json"):
             self.assertTrue((self.out / filename).is_file(), filename)
         report = json.loads((self.out / "report.json").read_text(encoding="utf-8"))
         self.assertTrue(report["complete_required_inputs"])
@@ -340,16 +345,40 @@ class ReportIntegrationTests(unittest.TestCase):
         self.assertTrue((self.out / "tables" / "candidate_metrics.csv").is_file())
         html_text = (self.out / "report.html").read_text(encoding="utf-8")
         self.assertIn('src="data:image/png;base64,', html_text)
-        history = (self.out / "HISTORICAL_RESULTS.md").read_text(encoding="utf-8")
+        history = (self.out / "README.md").read_text(encoding="utf-8")
         self.assertIn("](data/historical_results.json)", history)
+        self.assertFalse((self.out / "HISTORICAL_RESULTS.md").exists())
+        self.assertFalse((self.out / "PROJECT_EXPLAINED.md").exists())
         saved_history = json.loads((self.out / "data" / "historical_results.json").read_text(encoding="utf-8"))
         self.assertEqual(saved_history, report["historical"])
+        for experiment in saved_history["experiments"]:
+            self.assertIn(experiment["title"], html_text)
+            for note in experiment["notes"]:
+                self.assertIn(note, html.unescape(history))
+        self.assertIn("Saved workflows use frozen inputs.", history)
+        self.assertIn("Unknown regions remain unknown.", history)
+        inventory = json.loads((self.out / "input_manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(any(item["path"] == "README.md" for item in inventory["files"]))
         for target in re.findall(r"\]\(([^)\n]+)\)", history):
             if "://" not in target and not target.startswith("#"):
                 self.assertTrue((self.out / target.split("#", 1)[0]).resolve().exists(), target)
         for path in self.out.rglob("*"):
             if path.suffix in (".html", ".json", ".md", ".csv", ".svg"):
                 self.assertNotIn(PRIVATE_MARKER, path.read_text(encoding="utf-8"), str(path))
+
+    def test_partial_report_without_historical_data_has_no_broken_evidence_link(self):
+        historical_path = BUNDLE_ROOT / "data" / "historical_results.json"
+        original_is_file = Path.is_file
+        with patch.object(Path, "is_file", lambda path: path != historical_path and original_is_file(path)):
+            code, stdout, stderr = self.invoke("--allow-partial")
+        self.assertEqual(code, 0, stderr)
+        report = json.loads((self.out / "report.json").read_text(encoding="utf-8"))
+        self.assertFalse(report["complete_required_inputs"])
+        self.assertIsNone(report["historical"])
+        narrative = (self.out / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Historical comparison data is unavailable", narrative)
+        self.assertNotIn("](data/historical_results.json)", narrative)
+        self.assertFalse((self.out / "data" / "historical_results.json").exists())
 
     def test_required_missing_predictions_fail_before_output_creation(self):
         (self.root / "artifacts" / "test-ood" / "predictions.jsonl").unlink()

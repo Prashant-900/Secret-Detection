@@ -7,7 +7,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-GITLEAKS_V=8.24.3        # same versions as the README results table
+GITLEAKS_V=8.24.3        # Pinned baseline detector version
 TRUFFLEHOG_V=3.88.0
 DETECT_SECRETS_V=1.5.0
 

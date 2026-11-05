@@ -8,7 +8,7 @@ review them; mutate_real.py then skips those files (--exclude-hits).
 It is a deliberately simple built-in detector (vendor regexes + sensitive-key/high-entropy rule).
 For a stronger pass, also run gitleaks / trufflehog over the repos and review their hits too.
 
-usage: python audit_preexisting.py --repos repos --manifest manifest.csv --out preexisting_hits.csv
+usage: python audit_preexisting.py --repos repos --manifest manifest_v2.csv --out preexisting_hits.csv
 Never copy a hit that looks live into the dataset or publish it; report it to the owner.
 """
 import argparse

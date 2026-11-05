@@ -5,6 +5,7 @@
 __pycache__/
 *.pyc
 artifacts/
+local_docs/
 .hf-cache/
 .pytest_cache/
 
@@ -18,6 +19,10 @@ Scanner/tools/bin/
 Scanner/tools/tmp/
 Scanner/results/raw/
 Scanner/iac_eval_kit_v2.zip
+
+# Generated reports and plotting cache
+reporting_bundle/output/
+reporting_bundle/.matplotlib/
 
 # Machine-specific editor files
 .DS_Store

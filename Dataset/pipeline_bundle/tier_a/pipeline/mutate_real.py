@@ -10,7 +10,7 @@ Operators: inject_secret, to_reference, to_placeholder, rename_key, base64, pem,
            (same slot rendered as secret / reference / placeholder).
 
 usage:
-  python mutate_real.py --repos repos --manifest manifest.csv --splits splits.csv --out out/tierB \
+  python mutate_real.py --repos repos --manifest manifest_v2.csv --splits splits.csv --out out/tierB \
          [--exclude-hits preexisting_hits.csv] [--max-files-per-repo 20] [--seed 13]
 """
 import argparse
