@@ -268,7 +268,7 @@ Historical scanner measurements are retained in [historical_results.json](report
 
 ## Contributors
 
-File references identify maintained implementations; earlier versions and supporting documentation remain available in Git history. Shared work and upstream attribution are retained.
+File references below identify maintained implementations. Earlier versions and supporting documentation remain available in Git history; shared work and upstream attribution are retained.
 
 | Contributor | Contribution |
 |---|---|
@@ -285,12 +285,12 @@ File references identify maintained implementations; earlier versions and suppor
 
 ## Project history and upstream credit
 
-**Project period:** 11 September–5 November 2026, Asia/Kolkata. The Git history contains 43 contribution milestones and 21 integration merges across 21 topic branches plus `main`. Topic branches use `<contributor>/<topic>` names.
+The documented project period is **11 September–5 November 2026**, Asia/Kolkata. Topic branches use `<contributor>/<topic>` names and are integrated into `main`. Browse the development graph with:
 
 ```bash
 git log --graph --oneline --decorate --all
 ```
 
-All ten contributors have author commits in that history. GitHub account association depends on recognized commit emails; iashrkr23 uses `229318849+iashrkr23@users.noreply.github.com`. Contributor records do not replace upstream ownership or establish model-performance evidence.
+GitHub associates author commits with accounts through recognized commit email addresses; iashrkr23 uses `229318849+iashrkr23@users.noreply.github.com`.
 
 The rule database credits [Gitleaks](https://github.com/gitleaks/gitleaks), [detect-secrets](https://github.com/Yelp/detect-secrets), [git-secrets](https://github.com/awslabs/git-secrets), and [secrets-patterns-db](https://github.com/mazen160/secrets-patterns-db), alongside project-specific IaC/CI rules. Preserve the provenance comments in [rules.toml](Scanner/scanner/rules.toml). CredData and repository-derived examples retain their original annotations and provenance; keep source licence notices with distributed derivatives.
