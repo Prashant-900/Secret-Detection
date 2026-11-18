@@ -1,0 +1,81 @@
+name: 'Secret Detection Scanner'
+description: 'Two-tier IaC/CI secret scanner.'
+
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  target:
+    description: 'Directory or file to scan'
+    required: false
+    default: '.'
+  mode:
+    description: '"fast" (default) or "llm"'
+    required: false
+    default: 'fast'
+  bundle-url:
+    description: 'Full URL to model_bundle.tar.gz for llm mode'
+    required: false
+    default: ''
+  block-at:
+    description: 'Override BLOCK threshold'
+    required: false
+    default: ''
+  warn-at:
+    description: 'Override WARN threshold'
+    required: false
+    default: ''
+  all-files:
+    description: 'Scan every file type'
+    required: false
+    default: 'false'
+  sarif-output:
+    description: 'Path for the SARIF report'
+    required: false
+    default: 'secret-scan-results.sarif'
+
+outputs:
+  blocked:
+    description: 'Count of BLOCK findings'
+    value: ${{ steps.scan.outputs.blocked }}
+  warned:
+    description: 'Count of WARN findings'
+    value: ${{ steps.scan.outputs.warned }}
+  status:
+    description: 'Overall status'
+    value: ${{ steps.scan.outputs.status }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install fast-mode dependencies
+      if: inputs.mode == 'fast'
+      shell: bash
+      run: pip install --quiet tomli
+
+    - name: Install llm-mode dependencies
+      if: inputs.mode == 'llm'
+      shell: bash
+      run: pip install --quiet tomli torch transformers safetensors numpy scikit-learn PyYAML
+
+    - name: Run scanner
+      id: scan
+      shell: bash
+      env:
+        INPUT_TARGET:              ${{ inputs.target }}
+        INPUT_MODE:                ${{ inputs.mode }}
+        INPUT_BUNDLE_URL:          ${{ inputs.bundle-url }}
+        INPUT_BLOCK_AT:            ${{ inputs.block-at }}
+        INPUT_WARN_AT:             ${{ inputs.warn-at }}
+        INPUT_ALL_FILES:           ${{ inputs.all-files }}
+        INPUT_SARIF:               ${{ inputs.sarif-output }}
+        ACTION_PATH:               ${{ github.action_path }}
+        GITHUB_ACTION_REPOSITORY:  ${{ github.action_repository }}
+        TARGET_WORKSPACE:          ${{ github.workspace }}
+      run: bash "${{ github.action_path }}/entrypoint.sh"
